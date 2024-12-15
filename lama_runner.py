@@ -5,19 +5,15 @@ from parser import Parser
 from interpreter import Interpreter
 
 def run_lama_file(filename):
-    # Lees de code uit het .lama-bestand
     with open(filename, "r") as file:
         code = file.read()
 
-    # Tokenize de code
     lexer = Lexer(code)
     tokens = lexer.tokenize()
 
-    # Parse de tokens in een programma (AST)
     parser = Parser(tokens)
     program = parser.parse()
 
-    # Voer het programma uit met de interpreter
     interpreter = Interpreter(program)
     interpreter.run()
 
