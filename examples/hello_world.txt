@@ -1,1 +1,1 @@
-SAY "sexy"
+SAY "Hello Lama"
