@@ -4,19 +4,15 @@ def create_lama_file():
     file_name = input("Voer een naam in voor de .lama-bestand (zonder extensie): ")
     file_path = f"{file_name}.lama"
     
-    # Maak het .lama-bestand
     with open(file_path, 'w') as f:
-        f.write("")  # Maak een leeg bestand aan
+        f.write("")
 
-    # Open het bestand met nano
     os.system(f"nano {file_path}")
 
 def run_lama_file():
     file_path = input("Voer het pad in naar de .lama-bestand: ")
     
-    # Controleer of het bestand bestaat en de juiste extensie heeft
     if os.path.isfile(file_path) and file_path.endswith('.lama'):
-        # Voer het lama_runner.py script uit met het .lama-bestand als argument
         os.system(f"python lama_runner.py {file_path}")
     else:
         print("Ongeldig bestandspad of bestand is geen .lama-bestand.")
