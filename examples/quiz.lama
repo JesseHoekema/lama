@@ -1,0 +1,5 @@
+SAY "Welcome to our quiz!"
+ASK "What is 2 + 2? "
+IF ASK1 = "4" SAY "Correct! You're good at math!" ELSE SAY "Sorry, that's not correct. The answer is 4."
+ASK "What is the capital of France? "
+IF ASK2 = "Paris" SAY "Excellent! You know geography!" ELSE SAY "The correct answer is Paris."

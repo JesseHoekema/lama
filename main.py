@@ -4,7 +4,7 @@ from parser import Parser
 from interpreter import Interpreter
 
 def main():
-    with open("examples/hello_world.lama", "r") as file:
+    with open("examples/ask_if_example.lama", "r") as file:
         code = file.read()
 
     lexer = Lexer(code)

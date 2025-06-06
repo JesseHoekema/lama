@@ -1,6 +1,9 @@
 # parser.py
 
-from lexer import TOKEN_SAY, TOKEN_CALCULATE, TOKEN_NUMBER, TOKEN_STRING, TOKEN_EOF
+from lexer import (
+    TOKEN_SAY, TOKEN_CALCULATE, TOKEN_NUMBER, TOKEN_STRING, TOKEN_EOF,
+    TOKEN_ASK, TOKEN_IF, TOKEN_ELSE, TOKEN_EQUALS, TOKEN_IDENTIFIER
+)
 
 class Parser:
     def __init__(self, tokens):
@@ -26,6 +29,10 @@ class Parser:
                 commands.append(self.parse_say())
             elif self.current_token[0] == TOKEN_CALCULATE:
                 commands.append(self.parse_calculate())
+            elif self.current_token[0] == TOKEN_ASK:
+                commands.append(self.parse_ask())
+            elif self.current_token[0] == TOKEN_IF:
+                commands.append(self.parse_if())
             else:
                 self.advance()  # Skip unrecognized tokens
         return commands
@@ -44,3 +51,55 @@ class Parser:
         right = self.current_token[1]
         self.eat(TOKEN_NUMBER)  # Consume second number
         return ('CALCULATE', left, right)
+
+    def parse_ask(self):
+        self.eat(TOKEN_ASK)
+        token = self.current_token
+        self.eat(TOKEN_STRING)  # The prompt message
+        return ('ASK', token[1])
+
+    def parse_if(self):
+        self.eat(TOKEN_IF)
+        
+        # Left side can be either a string or an identifier (ASK variable)
+        left = None
+        if self.current_token[0] == TOKEN_IDENTIFIER:
+            left = self.current_token[1]  # Store ASK variable name
+            self.advance()
+        elif self.current_token[0] == TOKEN_STRING:
+            left = self.current_token[1]  # Store string value
+            self.eat(TOKEN_STRING)
+        else:
+            raise ValueError(f"Expected STRING or IDENTIFIER, but got {self.current_token[0]}")
+        
+        self.eat(TOKEN_EQUALS)
+        
+        # Right side can be either a string or an identifier (ASK variable)
+        right = None
+        if self.current_token[0] == TOKEN_IDENTIFIER:
+            right = self.current_token[1]  # Store ASK variable name
+            self.advance()
+        elif self.current_token[0] == TOKEN_STRING:
+            right = self.current_token[1]  # Store string value
+            self.eat(TOKEN_STRING)
+        else:
+            raise ValueError(f"Expected STRING or IDENTIFIER, but got {self.current_token[0]}")
+        
+        then_command = None
+        else_command = None
+        
+        # Parse then command
+        if self.current_token[0] == TOKEN_SAY:
+            then_command = self.parse_say()
+        elif self.current_token[0] == TOKEN_CALCULATE:
+            then_command = self.parse_calculate()
+            
+        # Check for ELSE clause
+        if self.current_token[0] == TOKEN_ELSE:
+            self.advance()  # Skip ELSE token
+            if self.current_token[0] == TOKEN_SAY:
+                else_command = self.parse_say()
+            elif self.current_token[0] == TOKEN_CALCULATE:
+                else_command = self.parse_calculate()
+        
+        return ('IF', left, right, then_command, else_command)
